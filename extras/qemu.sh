@@ -13,6 +13,13 @@
 MEMORY=1G
 DRIVE=$1
 
+if mount | grep /mnt/lfs > /dev/null; then
+  echo
+  echo "Un-mount the LFS partition /mnt/lfs"
+  echo
+  exit
+fi
+
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit

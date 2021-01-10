@@ -5,6 +5,20 @@
 
 PART=$1
 
+if mount | grep /mnt/lfs > /dev/null; then
+  echo
+  echo "LFS mount found."
+  echo
+else
+  echo
+  echo "No LFS partition found at /mnt/lfs."
+  echo
+  echo "Check out README.md"
+  echo
+  exit
+fi
+
+
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
@@ -21,15 +35,20 @@ if [ -z ${PART} ]
 fi
 
 cd /
+
 mount -t proc proc $LFS/proc
 mount -t sysfs sys $LFS/sys
 mount -o bind /dev $LFS/dev
-chroot $LFS           \
-  CHROOT=true         \
-  HOME=/root          \
-  MAKEFLAGS=-j`nproc` \
-  /bin/bash
+
+chroot "$LFS" /bin/bash -c '\
+  USER=root; HOME=/root; \
+  LANG=en_US.UTF-8; \
+  SHELL=/bin/bash; \
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; \
+  MAKEFLAGS=-j`nproc` /bin/bash'
+
 umount $LFS/{proc,sys,dev}
+
 echo
 echo "Exited chroot."
 echo
