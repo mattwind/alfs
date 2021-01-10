@@ -24,10 +24,12 @@ cd /
 mount -t proc proc $LFS/proc
 mount -t sysfs sys $LFS/sys
 mount -o bind /dev $LFS/dev
-echo lfs_chroot > $LFS/etc/lfs_chroot
-chroot $LFS /bin/bash
+chroot $LFS           \
+  CHROOT=true         \
+  HOME=/root          \
+  MAKEFLAGS=-j`nproc` \
+  /bin/bash
 umount $LFS/{proc,sys,dev}
-rm -rf $LFS/etc/lfs_chroot
 echo
 echo "Exited chroot."
 echo

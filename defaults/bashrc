@@ -31,7 +31,7 @@ shopt -s checkwinsize
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${lfs_chroot:-}" ] && [ -r /etc/lfs_chroot ]; then
+if [ "$CHROOT" == "true" ]; then
     lfs_chroot=lfs_chroot
 fi
 
